@@ -15,6 +15,10 @@ listMonadTest ns = do
     n2 <- moves
     return (n + n2)
 
+-- Also cool thing:
+-- ghci> take 5 [x*x | x <- [1..], x > 5]
+-- [36,49,64,81,100]
+
 --- My realisation
 
 data MyList a = MyList a (MyList a) | MyEmpty
