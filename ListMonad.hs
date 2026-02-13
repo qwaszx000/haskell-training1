@@ -1,5 +1,8 @@
 module Main where
 
+import Control.Applicative (Alternative, empty, (<|>))
+import Control.Monad (MonadPlus)
+
 main :: IO ()
 main = do
     putStrLn "Hello"
@@ -149,3 +152,27 @@ instance Traversable MyList where
 
 instance Monoid (MyList a) where
     mempty = MyEmpty
+
+-- ghci> [1,2,3] <|> [4,5,6]
+-- [1,2,3,4,5,6]
+-- My:
+-- ghci> empty :: MyList Int
+-- MyEmpty
+-- ghci> a <|> b
+-- MyList 5 (MyList 1 (MyList 2 (MyList 3 MyEmpty)))
+
+instance Alternative MyList where
+    empty = MyEmpty
+    ls <|> rs = ls `myCat` rs
+
+-- ghci> mzero :: [Int]
+-- []
+-- ghci> mplus [1,2,3] [4,5,6]
+-- [1,2,3,4,5,6]
+-- My:
+-- ghci> mzero :: MyList Int
+-- MyEmpty
+-- ghci> mplus a b
+-- MyList 5 (MyList 1 (MyList 2 (MyList 3 MyEmpty)))
+
+instance MonadPlus MyList
