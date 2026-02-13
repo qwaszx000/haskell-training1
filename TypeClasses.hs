@@ -51,6 +51,10 @@ instance (Ord a) => Ord (Monk a) where
 instance Soldier (Monk a) where
     fight2 s = (getHealth s + 5, getDamage s + 6)
 
+fightWithIO :: (Soldier a) => a -> IO ()
+fightWithIO s = do
+    print $ fight s
+
 monkTest :: IO ()
 monkTest = do
     let m = Monk{hp = 5, damage = 2, monkRang = (+)}
@@ -62,3 +66,4 @@ monkTest = do
     print $ fight m1
     print $ fight2 m1
     print $ m1 == m2
+    fightWithIO m
