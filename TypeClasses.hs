@@ -51,9 +51,25 @@ instance (Ord a) => Ord (Monk a) where
 instance Soldier (Monk a) where
     fight2 s = (getHealth s + 5, getDamage s + 6)
 
-fightWithIO :: (Soldier a) => a -> IO ()
+-- Archer
+data Archer = Archer Int Int
+
+instance Alive Archer where
+    getHealth (Archer hp _) = hp
+
+instance Warrior Archer where
+    getDamage (Archer _ dmg) = dmg
+
+instance Soldier Archer
+
+-- https://wiki.haskell.org/index.php?title=Existential_type
+-- https://stackoverflow.com/questions/3171179/constraining-the-return-type-to-a-context
+-- https://stackoverflow.com/questions/56315140/inferred-generic-function-typechecks-as-a-return-type-but-not-an-argument-type#56315897
+-- fightWithIO :: (Soldier a, Soldier b) => a -> IO b -- can't do
+fightWithIO :: (Soldier a) => a -> IO Archer
 fightWithIO s = do
     print $ fight s
+    return $ Archer 1 2
 
 monkTest :: IO ()
 monkTest = do
@@ -66,4 +82,5 @@ monkTest = do
     print $ fight m1
     print $ fight2 m1
     print $ m1 == m2
-    fightWithIO m
+    other <- fightWithIO m
+    print $ fight other
