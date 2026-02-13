@@ -1,0 +1,5 @@
+https://kindatechnical.com/haskell/lesson-39-gadts-generalized-algebraic-data-types.html
+ -- Maybe rewrite my calculator types with GADTs ?
+https://kindatechnical.com/haskell/lesson-43-basic-concurrency.html (and further async with exceptions handling)
+https://kindatechnical.com/haskell/lesson-56-template-haskell.html
+

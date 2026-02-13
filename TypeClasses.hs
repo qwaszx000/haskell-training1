@@ -51,6 +51,13 @@ instance (Ord a) => Ord (Monk a) where
 instance Soldier (Monk a) where
     fight2 s = (getHealth s + 5, getDamage s + 6)
 
+-- General for instance
+-- Can't do it this way
+-- https://stackoverflow.com/questions/7198907/haskell-constraint-is-no-smaller-than-the-instance-head
+-- https://stackoverflow.com/questions/17863332/what-contraint-is-no-smaller-than-the-instance-head-means-and-how-to-solve-it
+-- instance (Alive a, Warrior a) => Soldier a where
+--     fight2 s = (getHealth s + 5, getDamage s + 6)
+
 -- Archer
 data Archer = Archer Int Int
 
