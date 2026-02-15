@@ -29,18 +29,22 @@ https://www.schoolofhaskell.com/school/advanced-haskell/beautiful-concurrency
 https://kindatechnical.com/haskell/lesson-43-basic-concurrency.html (and further async with exceptions handling)
 https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/coroutines-for-streaming
 
-Free monads
+Free monads theory
 https://okmij.org/ftp/Computation/free-monad.html
-https://okmij.org/ftp/Computation/monads.html
-https://haskellforall.com/2012/06/you-could-have-invented-free-monads
-https://softwarepatternslexicon.com/functional/advanced-patterns/functional-abstractions/free-monad/
-https://stackoverflow.com/questions/13352205/what-are-free-monads
-https://haskellforall.com/2012/07/purify-code-using-free-monads
-https://wiki.haskell.org/index.php?title=Free_structure
+https://okmij.org/ftp/Haskell/extensible/extensible-a-la-carte.html
+https://okmij.org/ftp/Haskell/extensible/tutorial.html
+https://okmij.org/ftp/Haskell/extensible/
 http://comonad.com/reader/2011/free-monads-for-less/
 http://comonad.com/reader/2011/free-monads-for-less-2/
 http://comonad.com/reader/2011/free-monads-for-less-3/
-http://comonad.com/reader/about/
+https://wiki.haskell.org/index.php?title=Free_structure
+https://stackoverflow.com/questions/13352205/what-are-free-monads
+
+Free monads practical
+https://haskellforall.com/2012/06/you-could-have-invented-free-monads
+https://haskellforall.com/2012/07/purify-code-using-free-monads
+https://softwarepatternslexicon.com/functional/advanced-patterns/functional-abstractions/free-monad/
+https://deque.blog/2017/07/06/hexagonal-architecture-a-less-declarative-free-monad/
 
 https://kindatechnical.com/haskell/lesson-39-gadts-generalized-algebraic-data-types.html
  -- Maybe rewrite my calculator types with GADTs ?
@@ -53,6 +57,7 @@ https://en.wikibooks.org/wiki/Haskell
 https://softwarepatternslexicon.com/haskell/
 https://learn-haskell.blog/02-hello.html
 https://www.schoolofhaskell.com/user/commercial/content
+https://devtut.github.io/haskell/
 
 https://mmhaskell.com/parsing
 https://mmhaskell.com/apis
@@ -78,6 +83,79 @@ https://entropicthoughts.com/failing-at-combinatorics-with-haskell
 https://entropicthoughts.com/verifiable-software-development-estimations
 ---
 https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/
+https://oleksii.shmalko.com/20200813112820/
+---
+https://haskellforall.com/2026/02/my-experience-with-vibe-coding
+https://haskellforall.com/2024/07/software-engineers-are-not-and-should
+https://haskellforall.com/2024/08/firewall-rules-not-as-secure-as-you
+https://haskellforall.com/2024/07/quality-and-productivity-are-not
+https://haskellforall.com/2024/06/my-spiciest-take-on-tech-hiring
+https://haskellforall.com/2024/02/the-siren-song-of-domain-specific
+https://haskellforall.com/2023/10/my-views-on-neohaskell
+https://haskellforall.com/2022/10/what-does-isomorphic-mean-in-haskell
+https://haskellforall.com/2022/08/stop-calling-everything-nix
+https://haskellforall.com/2022/05/introductory-resources-to-type-theory
+https://haskellforall.com/2021/12/funding-isnt-problem-with-open-source
+https://haskellforall.com/2021/10/co-applicative-programming-style
+https://haskellforall.com/2021/10/advice-for-aspiring-bloggers
+https://haskellforall.com/2021/09/fall-from-grace-ready-to-fork
+https://haskellforall.com/2021/09/optics-are-monoids
+https://haskellforall.com/2021/06/probability-for-slay-spire-fanatics
+https://haskellforall.com/2021/08/naming-function-arguments-in-dhall
+https://haskellforall.com/2021/05/the-trick-to-avoid-deeply-nested-error
+https://haskellforall.com/2021/04/the-end-of-history-for-programming
+https://haskellforall.com/2021/01/the-visitor-pattern-is-essentially-same
+https://haskellforall.com/2020/10/why-i-prefer-functional-programming
+https://haskellforall.com/2020/07/the-golden-rule-of-software-quality
+https://haskellforall.com/2020/04/blazing-fast-fibonacci-numbers-using
+https://haskellforall.com/2020/01/why-dhall-advertises-absence-of-turing
+https://haskellforall.com/2018/10/detailed-walkthrough-for-beginner
+https://haskellforall.com/2018/08/nixos-in-production
+https://haskellforall.com/2018/05/how-i-evaluate-haskell-packages
+https://haskellforall.com/2018/02/the-wizard-monoid
+https://haskellforall.com/2017/10/advice-for-haskell-beginners
+https://haskellforall.com/2017/10/why-do-our-programs-need-to-read-input
+https://haskellforall.com/2017/09/type-driven-strictness
+https://haskellforall.com/2017/06/translating-c-parser-to-haskell
+https://haskellforall.com/2017/02/the-curry-howard-correspondence-between
+https://haskellforall.com/2015/12/how-to-contribute-to-haskell-ecosystem
+https://haskellforall.com/2015/10/explicit-is-better-than-implicit
+https://haskellforall.com/2015/10/basic-haskell-examples
+https://haskellforall.com/2015/10/polymorphism-for-dummies
+https://haskellforall.com/2015/09/how-to-make-your-haskell-code-more
+https://haskellforall.com/2015/05/the-internet-of-code
+https://haskellforall.com/2015/03/algebraic-side-effects
+https://haskellforall.com/2014/10/how-to-desugar-haskell-code
+https://haskellforall.com/2014/04/model-view-controller-haskell-style
+https://haskellforall.com/2014/04/worst-practices-are-viral-for-wrong
+https://haskellforall.com/2014/03/introductions-to-advanced-haskell-topics
+https://haskellforall.com/2014/02/reasoning-about-stream-programming
+https://haskellforall.com/2014/02/pipes-http-10-streaming-httphttps
+https://haskellforall.com/2014/02/streaming-logging
+https://haskellforall.com/2013/12/equational-reasoning
+https://haskellforall.com/2013/11/test-stream-programming-using-haskells
+https://haskellforall.com/2013/10/how-to-reimplement-conduit-parsing-api
+https://haskellforall.com/2013/10/manual-proofs-for-pipes-laws
+https://haskellforall.com/2013/08/sometimes-less-is-more-in-language
+https://haskellforall.com/2013/09/perfect-streaming-using-pipes-bytestring
+https://haskellforall.com/2013/07/statements-vs-expressions
+https://haskellforall.com/2013/06/the-resource-applicative
+https://haskellforall.com/2013/06/from-zero-to-cooperative-threads-in-33
+https://haskellforall.com/2013/02/you-could-have-invented-comonads
+https://haskellforall.com/2013/01/introduction-to-haskell-io
+https://haskellforall.com/2012/12/the-continuation-monad
+https://haskellforall.com/2012/09/concurrency-lists-of-kleisli-arrows
+https://haskellforall.com/2012/08/the-category-design-pattern
+https://haskellforall.com/2012/08/code-example-1
+https://haskellforall.com/2012/06/gadts
+https://haskellforall.com/2012/05/conduit-bugs
+https://haskellforall.com/2012/03/haskell-for-purists-pipe-finalization
+https://haskellforall.com/2012/01/haskell-for-mainstream-programmers_28
+---
+http://comonad.com/reader/about/
+---
+https://stackoverflow.com/questions/3870088/a-monad-is-just-a-monoid-in-the-category-of-endofunctors-whats-the-problem?noredirect=1&lq=1
+https://stackoverflow.com/questions/15726733/simple-examples-to-illustrate-category-monoid-and-monad?rq=3
 
 Useful haskell:
 https://hackage-content.haskell.org/package/base-4.22.0.0/docs/Debug-Trace.html
