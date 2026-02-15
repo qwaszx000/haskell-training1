@@ -2,6 +2,11 @@
 
 module FreeMonad where
 
+-- https://deque.blog/2017/07/06/hexagonal-architecture-a-less-declarative-free-monad/
+-- https://softwarepatternslexicon.com/functional/advanced-patterns/functional-abstractions/free-monad/
+-- https://haskellforall.com/2012/06/you-could-have-invented-free-monads
+-- https://haskellforall.com/2012/07/purify-code-using-free-monads
+
 -- https://downloads.haskell.org/ghc/latest/docs/users_guide/exts/gadt.html
 data Expr a where
     Print :: String -> Expr ()
@@ -42,8 +47,3 @@ main :: IO ()
 main = do
     n <- eval mainLogic
     print n
-
--- https://deque.blog/2017/07/06/hexagonal-architecture-a-less-declarative-free-monad/
--- https://softwarepatternslexicon.com/functional/advanced-patterns/functional-abstractions/free-monad/
--- https://haskellforall.com/2012/06/you-could-have-invented-free-monads
--- https://haskellforall.com/2012/07/purify-code-using-free-monads
