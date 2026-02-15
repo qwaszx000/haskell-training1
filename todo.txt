@@ -1,9 +1,3 @@
-Strings
-https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/bytestring-bits-and-pieces
-https://hasufell.github.io/posts/2024-05-07-ultimate-string-guide.html
-https://academy.fpblock.com/haskell/tutorial/string-types/
-https://oleksii.shmalko.com/2015/haskell-string-types/
-
 Monads, monad transformers
 https://wiki.haskell.org/All_About_Monads
 https://en.wikibooks.org/wiki/Haskell/Understanding_monads#Is_my_Monad_a_Functor?
