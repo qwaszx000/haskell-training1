@@ -50,10 +50,6 @@ https://quentinduval.github.io/blog/2017/02/06/code-quick-check-2.html
 https://quentinduval.github.io/blog/2017/02/10/code-quick-check-3.html
 https://quentinduval.github.io/blog/2017/02/14/quick-check-experiments.html
 
-https://kindatechnical.com/haskell/lesson-39-gadts-generalized-algebraic-data-types.html
- -- Maybe rewrite my calculator types with GADTs ?
-https://kindatechnical.com/haskell/lesson-56-template-haskell.html
-
 Tutorials:
 https://book.realworldhaskell.org/read/index.html
 https://learnyouahaskell.github.io/chapters.html
@@ -73,6 +69,9 @@ https://mmhaskell.com/data-structures
 https://mmhaskell.com/haskell-brain-4
 ---
 https://mmhaskell.com/blog/2017/6/26/fun-with-data-structures
+https://kindatechnical.com/haskell/lesson-39-gadts-generalized-algebraic-data-types.html
+ -- Maybe rewrite my calculator types with GADTs ?
+https://kindatechnical.com/haskell/lesson-56-template-haskell.html
 
 Other articles to read
 https://academy.fpblock.com/haskell/tutorial/primitive-haskell/
@@ -84,7 +83,6 @@ https://github.com/quchen/articles/blob/master/great_things_about_haskell.md
 https://github.com/quchen/articles/blob/master/tag-dont-type.md
 https://github.com/quchen/articles/blob/master/useful_techniques.md
 https://github.com/leonidas/codeblog/blob/master/2011/2011-12-27-template-haskell.md
-https://github.com/quchen/articles/blob/master/write_yourself_a_brainfuck.md
 https://github.com/quchen/articles/blob/master/2018-11-22_zipWith_const.md
 https://github.com/quchen/articles/blob/master/cont_monad.md
 https://github.com/quchen/articles/blob/master/fbut.md
