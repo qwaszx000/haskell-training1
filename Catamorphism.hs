@@ -1,6 +1,7 @@
 module Catamorphism where
 
 import Data.Foldable (foldl')
+import Data.List (partition)
 import Data.Map (Map, fromList, (!))
 
 -- https://quentinduval.github.io/blog/2017/01/20/catamorph-dsl-deep-dive.html
@@ -8,28 +9,31 @@ import Data.Map (Map, fromList, (!))
 data Operator = Add | Mul
     deriving (Show, Eq)
 
+newtype Fix t = Fix {unFix :: t (Fix t)}
+
+type Expr = Fix ExprR
+
 type Id = Char
 type Env = Map Id Int
-data Expr
+data ExprR r
     = Const Int
     | Var Id
-    | Op Operator [Expr]
+    | Op Operator [r]
+    deriving (Eq)
 
--- Basic realisation without Catamorphism, through recursion
--- for Expr without r
-instance Show Expr where
-    show (Const n) = show n
-    show (Var c) = ['"', c]
-    show (Op op exs) = "(" ++ show op ++ " " ++ unwords (map show exs) ++ ")"
+instance Functor ExprR where
+    fmap _ (Const n) = Const n
+    fmap _ (Var i) = Var i
+    fmap f (Op op rs) = Op op $ map f rs
 
 econst :: Int -> Expr
-econst = Const
+econst = Fix . Const
 
 evar :: Id -> Expr
-evar = Var
+evar = Fix . Var
 
 eop :: Operator -> [Expr] -> Expr
-eop = Op
+eop op exs = Fix $ Op op exs
 
 testExp =
     eop
@@ -39,52 +43,67 @@ testExp =
         , econst 5
         ]
 
-optimize :: Expr -> Expr
-optimize (Op op exs) = combine $ foldl' calc (neutral, []) exs
+cata :: (Functor f) => (f a -> a) -> Fix f -> a
+cata algebra = algebra . fmap (cata algebra) . unFix
+
+type Algebra f = f (Fix f) -> Fix f
+
+comp :: Algebra f -> Algebra f -> Algebra f
+comp f g = f . unFix . g
+
+printExpr :: Expr -> String
+printExpr = cata algebra
   where
-    (neutral, opAction) = case op of
-        Add -> (0, (+))
-        Mul -> (1, (*))
+    algebra :: ExprR String -> String
+    algebra (Const n) = show n
+    algebra (Var c) = ['"', c]
+    algebra (Op op strs) = "(" ++ show op ++ " " ++ unwords strs ++ ")"
 
-    -- Const part, list of vars
-    combine :: (Int, [Expr]) -> Expr
-    combine (cst, []) = econst cst
-    combine (cst, exs) = Op op $ econst cst : exs
-    ---
-    -- Calculate if we can
-    calc :: (Int, [Expr]) -> Expr -> (Int, [Expr])
-    calc (cst, exs) (Const n) = (cst `opAction` n, exs)
-    calc (cst, exs) ex =
-        let
-            ex' = optimize ex
-         in
-            case ex' of
-                Const n -> (cst `opAction` n, exs)
-                _ -> (cst, ex' : exs)
-optimize ex = ex
+optimizeAdd :: ExprR Expr -> Expr
+optimizeAdd ex@(Op Add exs) = optimizeOp ex 0 (+)
+optimizeAdd ex = Fix ex
 
-substitute :: Env -> Expr -> Expr
-substitute env (Var n) = econst $ env ! n
-substitute env (Op op exs) = Op op $ map (substitute env) exs
-substitute _ ex = ex
+isZeroCst :: Expr -> Bool
+isZeroCst (Fix (Const 0)) = True
+isZeroCst _ = False
 
-eval :: Env -> Expr -> Int
-eval env ex = case optimize $ substitute env ex of
-    (Const n) -> n
-    _ -> error "Could not eval"
+optimizeMul :: ExprR Expr -> Expr
+optimizeMul ex@(Op Mul exs)
+    | any isZeroCst exs = econst 0
+    | otherwise = optimizeOp ex 1 (*)
+optimizeMul ex = Fix ex
 
--- cataPrint :: Expr
+optimizeOp :: ExprR Expr -> Int -> (Int -> Int -> Int) -> Expr
+optimizeOp (Op op exs) neutral combine =
+    let
+        isCst (Const _) = True
+        isCst _ = False
+        (consts, vars) = partition (isCst . unFix) exs
+        consts' = map (\(Fix (Const n)) -> n) consts
+        constsTotal = foldl' combine neutral consts'
+     in
+        case vars of
+            [] -> econst constsTotal
+            [x] | constsTotal == neutral -> x
+            xs | constsTotal == neutral -> Fix $ Op op xs
+            xs -> Fix $ Op op (econst constsTotal : xs)
+
+optimize :: Expr -> Expr
+optimize = cata (optimizeAdd `comp` optimizeMul)
 
 main :: IO ()
 main = do
     let env = fromList [('c', 5)]
 
-    print testExp
-    let ex = optimize testExp
-    print ex
+    -- putStrLn $ printExpr testExp
+    putStrLn $ printExpr $ optimize testExp
 
-    let ex' = substitute env ex
-    print ex'
+-- print testExp
+-- let ex = optimize testExp
+-- print ex
 
-    print $ optimize ex'
-    print $ eval env testExp
+-- let ex' = substitute env ex
+-- print ex'
+
+-- print $ optimize ex'
+-- print $ eval env testExp
