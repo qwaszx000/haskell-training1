@@ -61,8 +61,6 @@ https://mmhaskell.com/data-structures
 https://mmhaskell.com/haskell-brain-4
 ---
 https://mmhaskell.com/blog/2017/6/26/fun-with-data-structures
-https://kindatechnical.com/haskell/lesson-39-gadts-generalized-algebraic-data-types.html
- -- Maybe rewrite my calculator types with GADTs ?
 https://kindatechnical.com/haskell/lesson-56-template-haskell.html
 
 Other articles to read
@@ -189,4 +187,9 @@ https://wiki.haskell.org/Arrow_tutorial
 https://softwarepatternslexicon.com/haskell/behavioral-patterns-in-haskell/arrows-and-their-role-in-haskell-design-patterns/
 https://en.wikibooks.org/wiki/Haskell/Arrow_tutorial
 https://wiki.haskell.org/Arrow
+
+---
+https://wiki.haskell.org/Rank-N_types
+https://stackoverflow.com/questions/33446759/understanding-haskells-rankntypes
+
 
