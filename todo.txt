@@ -141,6 +141,24 @@ https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/p
 ---
 https://quentinduval.github.io/blog/2016/11/27/open-recursion-haskell.html
 https://quentinduval.github.io/blog/2017/09/13/monoids.html
+---
+https://okmij.org/ftp/
+https://okmij.org/ftp/tagless-final/cookbook.html
+https://okmij.org/ftp/meta-programming/HPC.html#diy-opt
+---
+https://chrispenner.ca/posts/arrow-effects
+https://chrispenner.ca/posts/intern-cache
+https://chrispenner.ca/posts/conways-game-of-life
+https://chrispenner.ca/posts/kleisli-endo
+https://chrispenner.ca/posts/mutexes
+https://chrispenner.ca/posts/wc
+---
+https://ro-che.info/articles/2015-09-02-monadfix
+---
+https://www.fceia.unr.edu.ar/~mauro/pubs/Notions_of_Computation_as_Monoids.pdf
+https://okmij.org/ftp/tagless-final/JFP.pdf
+---
+https://www.schoolofhaskell.com/user/mutjida/typed-tagless-final-linear-lambda-calculus/0-introduction
 
 Useful haskell:
 https://hackage-content.haskell.org/package/base-4.22.0.0/docs/Debug-Trace.html
