@@ -15,27 +15,27 @@ import Servant (serve)
 import qualified Server as MS
 
 import Control.Concurrent
+import Control.Exception
 import Control.Monad.IO.Class (liftIO)
-import Control.Monad.Logger (runStderrLoggingT)
-import Database.Persist.Sqlite (runMigration, withSqliteConn)
+import Control.Monad.Logger (askLoggerIO, monadLoggerLog, runStderrLoggingT)
+import Database.Persist.Sqlite (runMigration, wrapConnection)
+import Database.Sqlite (open)
 
 import Data.Aeson
 import Data.Text
 import System.IO.Unsafe (unsafePerformIO)
 
 main :: IO ()
-main = defaultMain tests
+main = bracket echoApp (\_ -> pure ()) $ \app -> defaultMain (tests app)
 
-echoApp :: Application
-{-# NOINLINE echoApp #-}
-echoApp = unsafePerformIO $ runStderrLoggingT $ do
+echoApp :: IO Application
+echoApp = runStderrLoggingT $ do
+    logger <- askLoggerIO
     let t :: Text = "hello 1"
-    withSqliteConn
-        "./tmp.sqlite3"
-        ( \conn -> do
-            MS.prepareDb conn
-            pure $ MS.echoWaiApp (MS.Env t conn)
-        )
+    rconn <- liftIO $ open "./tmp.sqlite3"
+    conn <- liftIO $ wrapConnection rconn logger
+    MS.prepareDb conn
+    pure $ MS.echoWaiApp (MS.Env t conn)
 
 -- main = do
 --     serverT <- forkIO MS.main
@@ -43,8 +43,8 @@ echoApp = unsafePerformIO $ runStderrLoggingT $ do
 
 --     killThread serverT
 
-tests :: TestTree
-tests = testGroup "Tests" [qced, unittests]
+tests :: Application -> TestTree
+tests app = testGroup "Tests" [qced, unittests app]
 
 instance QC.Arbitrary EchoRec where
     arbitrary = do
@@ -59,14 +59,15 @@ qced =
         [ QC.testProperty "Some test" $
             \(er :: EchoRec) -> case (decode . encode) er of
                 Just x -> x == er
-                Nothing -> True
+                Nothing -> False
         ]
 
-unittests :: TestTree
-unittests =
+unittests :: Application -> TestTree
+unittests app =
     testGroup
         "Unit tests"
-        [ W.testWai echoApp "Check1" $ do
+        [ W.testWai app "Check1" $ do
             res <- W.get "/echo/Test1/json"
-            liftIO $ print res
+            -- liftIO $ print res
+            W.assertStatus 200 res
         ]

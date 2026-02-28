@@ -1,3 +1,5 @@
 
 dist-newstyle/
 tmp.sqlite3
+tmp.sqlite3-shm
+tmp.sqlite3-wal
