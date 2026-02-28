@@ -1,0 +1,3 @@
+
+packages: ./servant-persistent.cabal
+tests: True
