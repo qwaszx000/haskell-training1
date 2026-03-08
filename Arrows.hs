@@ -74,3 +74,50 @@ mean2 = proc value -> do
 
 -- ghci> runCircuit mean2 [1, 2, 0, 0, 3, 4, 0, 5]
 -- [1.0,1.5,1.0,0.75,1.2,1.6666666666666667,1.4285714285714286,1.875]
+
+testKIO1 :: IO ()
+testKIO1 = do
+    let readl = Kleisli $ const getLine
+    let putl = Kleisli print
+    let putm = ("aaa" ++) ^>> (++ "bbb") ^>> Kleisli putStrLn
+    let k = readl >>> (putl &&& putm) >>^ uncurry const
+    runKleisli k ()
+
+testKIO2 :: IO ()
+testKIO2 = do
+    let readl = Kleisli $ const getLine
+    let putl = ("First: " ++)
+    let putm = ("aaa" ++) ^>> (++ "bbb")
+    let k = (readl >>> arr (putl &&& putm) >>^ (\(a, b) -> a ++ "\n" ++ b)) >>> Kleisli putStrLn
+    runKleisli k ()
+
+--- Test synchroneousness
+-- How?
+
+newtype SF a b = SF {unSF :: [a] -> [b]}
+
+instance Cat.Category SF where
+    id :: SF a a
+    id = SF id
+    (.) :: SF b c -> SF a b -> SF a c
+    (SF f) . (SF g) = SF $ f . g
+
+instance Arrow SF where
+    arr :: (b -> c) -> SF b c
+    arr = SF . map
+
+    -- (***) :: SF b c -> SF b' c' -> SF (b, b') (c, c')
+    -- (SF f) *** (SF g) = SF $ unzip >>> first f >>> second g >>> uncurry zip
+
+    first :: SF b c -> SF (b, d) (c, d)
+    first (SF f) = SF $ unzip >>> first f >>> uncurry zip
+
+runSF :: SF a b -> [a] -> [b]
+runSF (SF f) = f
+
+testSF1 :: IO ()
+testSF1 = do
+    let a = [1, 2, 3, 4, 5]
+    let k = arr (5 +) >>^ (2 *) >>> (arr (5 +) &&& arr (+ 5)) >>^ uncurry (+)
+    let ar = runSF k a
+    print ar
