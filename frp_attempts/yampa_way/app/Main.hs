@@ -1,3 +1,4 @@
+{-# LANGUAGE Arrows #-}
 {-# LANGUAGE RecordWildCards #-}
 
 module Main where
@@ -75,30 +76,6 @@ dmode = InWindow "My title" (200, 200) (20, 20)
 bgColor :: Color
 bgColor = white
 
--- displayWorld :: World -> Picture
--- displayWorld (World pl cur) = pictures [displayPlayer pl, displayCursor cur]
-
--- displayPlayer :: Player -> Picture
--- displayPlayer Player{..} = translate x y $ color black form
---   where
---     (x, y) = playerPos
---     form
---         | playerJumpsC > 5 = rectangleSolid 20 20
---         | otherwise = circleSolid 10
-
--- stepWorld :: Float -> World -> World
--- stepWorld _ w@(World pl cur) =
---     if not $ playerCanJump pl
---         then
---             let
---                 (x, y) = playerPos pl
---                 newPos = (x, y - 1)
---                 canJump = y == 0
---                 pl' = pl{playerPos = newPos, playerCanJump = canJump}
---              in
---                 World pl' cur
---         else w
-
 mousePos :: SF (Event G.Event) (Float, Float)
 mousePos = delayEvent 2 >>> arrEPrim getMousePos >>> hold (0, 0)
   where
@@ -120,62 +97,68 @@ displayCursor = mousePos >>> cursorPict
 
 data PlayerActions = PlayerJump
 
--- data Player = Player {pl'Pos :: (Float, Float), pl'JumpsC :: Int}
+data Player = Player {pl'Pos :: (Float, Float), pl'JumpsC :: Int}
 
-jumpEvents :: SF (Event G.Event) (Event PlayerActions)
-jumpEvents = arrEPrim $ mapFilterE selectJumps
+initPlayer :: Player
+initPlayer = Player (0, 0) 0
+
+playerEvents :: SF (Event G.Event) (Event PlayerActions)
+playerEvents = arrEPrim $ mapFilterE selectJumps
   where
     selectJumps :: G.Event -> Maybe PlayerActions
     selectJumps (G.EventKey (G.SpecialKey G.KeyUp) G.Down _ _) = Just PlayerJump
     selectJumps _ = Nothing
 
-initialPlayerPos :: (Float, Float)
-initialPlayerPos = (0, 0)
-
-playerPos :: SF (Event PlayerActions) (Float, Float)
-playerPos =
+playerAct :: SF (Event PlayerActions) Player
+playerAct =
     loopPre
-        initialPlayerPos
-        ( arrPrim
-            processPosEvents
-            >>> playerGravity
-            >>> (identity &&& identity)
-        )
+        initPlayer
+        $ processPlayer >>> (identity &&& identity)
   where
-    processPosEvents :: (Event PlayerActions, (Float, Float)) -> (Float, Float)
-    processPosEvents (Event PlayerJump, (x, y)) = if y == 0 then (x, y + 10) else (x, y)
-    processPosEvents (_, (x, y)) = (x, y)
+    processPlayer :: SF (Event PlayerActions, Player) Player
+    processPlayer = proc (act, pl) -> do
+        fact <- playerFilterActions -< attach act pl
+        pl1 <- arrPrim processPlayerActions -< (fact, pl)
+        pl2 <- processPlayerGravity -< pl1
+        returnA -< pl2
 
-playerGravity :: SF (Float, Float) (Float, Float)
-playerGravity =
-    second $
-        ((identity &&& fallSpeed) >>^ uncurry (-))
-            >>> (identity &&& constant 0)
-            >>^ uncurry max
+    processPlayerActions :: (Event PlayerActions, Player) -> Player
+    processPlayerActions (Event PlayerJump, pl@Player{..}) =
+        pl
+            { pl'JumpsC = (pl'JumpsC + 1) `mod` 10
+            , pl'Pos = second (+ 10) pl'Pos
+            }
+    processPlayerActions (_, pl) = pl
+
+    processPlayerGravity :: SF Player Player
+    processPlayerGravity =
+        (identity &&& arr pl'Pos)
+            >>> second objGravity
+            >>> second (second $ arr (max 0))
+            >>> arr (\(pl, pos) -> pl{pl'Pos = pos})
+
+playerFilterActions :: SF (Event (PlayerActions, Player)) (Event PlayerActions)
+playerFilterActions = arrEPrim $ mapFilterE filterActions
   where
-    fallSpeed :: SF Float Float
-    -- fallSpeed = constant (10 / 1) >>> integral
-    fallSpeed = constant 1
+    filterActions :: (PlayerActions, Player) -> Maybe PlayerActions
+    filterActions (PlayerJump, Player{..})
+        | snd pl'Pos > 0 = Nothing
+    filterActions (act, _) = Just act
 
-playerPict :: SF (Float, Float) Picture
+objGravity :: SF (Float, Float) (Float, Float)
+objGravity =
+    second $ arr (\y -> y - 1) -- >>> integral
+
+playerPict :: SF Player Picture
 playerPict = arrPrim drawPlayer
   where
-    drawPlayer :: (Float, Float) -> Picture
-    drawPlayer (x, y) = translate x y $ color black form
+    drawPlayer :: Player -> Picture
+    drawPlayer p@(Player (x, y) _) = translate x y $ color black $ form p
 
-    form :: Picture
-    form = rectangleSolid 20 20
+    form :: Player -> Picture
+    form Player{..}
+        | pl'JumpsC > 5 = rectangleSolid 20 20
+        | otherwise = circleSolid 10
 
 displayPlayer :: SF (Event G.Event) Picture
-displayPlayer = jumpEvents >>> playerPos >>> playerPict
-
--- playerPict :: SF Player Picture
--- playerPict = arrPrim drawPlayer
---   where
---     drawPlayer :: Player -> Picture
---     drawPlayer p@Player{pl'Pos = (x, y)} = translate x y $ color black (form p)
-
---     form :: Player -> Picture
---     form Player{..}
---         | pl'JumpsC > 5 = rectangleSolid 20 20
---         | otherwise = circleSolid 10
+displayPlayer = playerEvents >>> playerAct >>> playerPict
