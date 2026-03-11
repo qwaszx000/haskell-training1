@@ -1,4 +1,5 @@
 {-# LANGUAGE Arrows #-}
+{-# LANGUAGE MultiWayIf #-}
 {-# LANGUAGE RecordWildCards #-}
 
 module Main where
@@ -97,10 +98,14 @@ displayCursor = mousePos >>> cursorPict
 
 data PlayerActions = PlayerJump
 
-data Player = Player {pl'Pos :: (Float, Float), pl'JumpsC :: Int}
+data Player = Player
+    { pl'Pos :: (Float, Float)
+    , pl'JumpsC :: Int
+    , pl'Speed :: (Float, Float)
+    }
 
 initPlayer :: Player
-initPlayer = Player (0, 0) 0
+initPlayer = Player (0, 0) 0 (0, 0)
 
 playerEvents :: SF (Event G.Event) (Event PlayerActions)
 playerEvents = arrEPrim $ mapFilterE selectJumps
@@ -120,22 +125,33 @@ playerAct =
         fact <- playerFilterActions -< attach act pl
         pl1 <- arrPrim processPlayerActions -< (fact, pl)
         pl2 <- processPlayerGravity -< pl1
-        returnA -< pl2
+        pl3 <- processPlayerSpeed -< pl2
+        returnA -< pl3
 
     processPlayerActions :: (Event PlayerActions, Player) -> Player
     processPlayerActions (Event PlayerJump, pl@Player{..}) =
         pl
             { pl'JumpsC = (pl'JumpsC + 1) `mod` 10
-            , pl'Pos = second (+ 10) pl'Pos
+            , pl'Speed = second (+ 10) pl'Pos
             }
     processPlayerActions (_, pl) = pl
 
     processPlayerGravity :: SF Player Player
     processPlayerGravity =
-        (identity &&& arr pl'Pos)
+        (identity &&& arr pl'Speed)
             >>> second objGravity
-            >>> second (second $ arr (max 0))
-            >>> arr (\(pl, pos) -> pl{pl'Pos = pos})
+            >>> arr
+                ( \(pl@Player{pl'Pos = (_, y)}, pos@(dx, dy)) ->
+                    if
+                        | y > 0 -> pl{pl'Speed = pos}
+                        | y < 0 && dy < 0 -> pl{pl'Speed = (dx, 0)}
+                        | otherwise -> pl
+                )
+
+    processPlayerSpeed :: SF Player Player
+    processPlayerSpeed = proc pl@Player{..} -> do
+        pos' <- integral -< pl'Speed
+        returnA -< pl{pl'Pos = pos'}
 
 playerFilterActions :: SF (Event (PlayerActions, Player)) (Event PlayerActions)
 playerFilterActions = arrEPrim $ mapFilterE filterActions
@@ -145,15 +161,23 @@ playerFilterActions = arrEPrim $ mapFilterE filterActions
         | snd pl'Pos > 0 = Nothing
     filterActions (act, _) = Just act
 
+-- jumpImpulse :: Float
+-- jumpImpulse = 10
+
+-- gravityAccel :: Float
+-- gravityAccel = -1
+
 objGravity :: SF (Float, Float) (Float, Float)
+-- objGravity = second ((identity &&& constant gravityAccel) >>^ uncurry (+)) >>> integral
+
 objGravity =
-    second $ arr (\y -> y - 1) -- >>> integral
+    second $ arr (\y -> y - 1)
 
 playerPict :: SF Player Picture
 playerPict = arrPrim drawPlayer
   where
     drawPlayer :: Player -> Picture
-    drawPlayer p@(Player (x, y) _) = translate x y $ color black $ form p
+    drawPlayer p@(Player (x, y) _ _) = translate x y $ color black $ form p
 
     form :: Player -> Picture
     form Player{..}
